@@ -6,7 +6,7 @@ module.exports = {
   plugins: [
     // Only active in dev mode
     ...(process.env.NODE_ENV !== 'production'
-      ? ['babel-plugin-rn-debug-mcp']
+      ? ['@rn-debug-mcp/babel-plugin']
       : []),
   ],
 };

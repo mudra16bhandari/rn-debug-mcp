@@ -10,23 +10,12 @@ This guide covers the installation and configuration of RN Debug MCP.
 
 ## Installation
 
-### 1. Root Setup
+### 1. Integrate into your React Native App
 
-Clone the repository and install dependencies:
-
-```bash
-git clone https://github.com/your-repo/rn-debug-mcp.git
-cd rn-debug-mcp
-npm install
-npm run build
-```
-
-### 2. Integration into your React Native App
-
-#### Install the instrumentation package:
+#### Install the packages:
 
 ```bash
-npm install @rn-debug-mcp/instrumentation
+npm install @rn-debug-mcp/instrumentation @rn-debug-mcp/babel-plugin --save-dev
 ```
 
 #### Add the Babel plugin to `babel.config.js`:
@@ -36,7 +25,7 @@ module.exports = {
   presets: ['module:@react-native/babel-preset'],
   plugins: [
     ...(process.env.NODE_ENV !== 'production'
-      ? ['babel-plugin-rn-debug-mcp']
+      ? ['@rn-debug-mcp/babel-plugin']
       : []),
   ],
 };
@@ -56,12 +45,11 @@ if (__DEV__) {
 
 To use the AI-powered performance analysis, you need to register the MCP server in Cursor.
 
-1. Locate your Cursor MCP settings (usually in Project Settings or global Cursor settings).
+1. Locate your Cursor MCP settings.
 2. Add a new MCP server:
    - **Name**: `rn-debug-mcp`
-   - **Type**: `stdio`
-   - **Command**: `node`
-   - **Arguments**: `["/absolute/path/to/rn-debug-mcp/packages/mcp-server/dist/index.js"]`
+   - **Type**: `command`
+   - **Command**: `npx -y @rn-debug-mcp/server`
 
 ## Configuration
 

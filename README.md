@@ -23,18 +23,21 @@ RN Debug MCP provides runtime debugging capabilities for React Native apps throu
 
 ## Quick Start
 
-### 1. Build the project
+### 1. Install dependencies in your React Native app
 ```bash
-npm install
-npm run build
+npm install @rn-debug-mcp/instrumentation @rn-debug-mcp/babel-plugin --save-dev
 ```
 
-### 2. Configure Cursor
-Add the following to your Cursor MCP settings:
-- Command: `node`
-- Args: `["/path/to/rn-debug-mcp/packages/mcp-server/dist/index.js"]`
+### 2. Configure Babel
+Add `@rn-debug-mcp/babel-plugin` to your `babel.config.js`:
+```javascript
+module.exports = {
+  // ...
+  plugins: ['@rn-debug-mcp/babel-plugin'],
+};
+```
 
-### 3. Initialize in your RN App
+### 3. Initialize in your App
 ```javascript
 import { initDebugMCP } from '@rn-debug-mcp/instrumentation';
 
@@ -42,6 +45,12 @@ if (__DEV__) {
   initDebugMCP({ wsUrl: 'ws://localhost:4567' });
 }
 ```
+
+### 4. Configure Cursor
+Add the following to your Cursor MCP settings:
+- **Name**: `RN Debug`
+- **Type**: `command`
+- **Command**: `npx -y @rn-debug-mcp/server`
 
 ## Available Analysis Tools
 

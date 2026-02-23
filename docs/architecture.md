@@ -11,7 +11,7 @@ This package runs inside the React Native application. It is responsible for:
 - Providing hooks for component render tracking.
 - Buffering events and sending them to the server via WebSocket or HTTP.
 
-### 2. Transformation Layer (babel-plugin-rn-debug-mcp)
+### 2. Transformation Layer (@rn-debug-mcp/babel-plugin)
 A Babel plugin that automatically injects instrumentation hooks into React components. It identifies functional components and adds `useRenderTracker` and `useRenderCheck` calls, ensuring developers don't have to manually instrument every component.
 
 ### 3. Analysis & Interface Layer (@rn-debug-mcp/server)

@@ -1,8 +1,14 @@
 {
-  "name": "babel-plugin-rn-debug-mcp",
+  "name": "@rn-debug-mcp/babel-plugin",
   "version": "1.0.0",
   "description": "Babel plugin for automatic React Native component instrumentation",
   "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "keywords": [
     "babel-plugin",
@@ -10,6 +16,9 @@
     "performance",
     "mcp"
   ],
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
   "dependencies": {
     "@babel/core": "^7.23.0",
     "@babel/types": "^7.23.0",

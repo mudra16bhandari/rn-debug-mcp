@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { EventBuffer } from './collector/EventBuffer';
 import { EventCollector } from './collector/EventCollector';
 import { AnalysisEngine } from './analysis/AnalysisEngine';
