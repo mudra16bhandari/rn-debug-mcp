@@ -1,0 +1,27 @@
+{
+    "name": "@rn-debug-mcp/server",
+    "version": "1.0.0",
+    "description": "MCP Server for React Native runtime debugging",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc",
+        "dev": "ts-node src/index.ts",
+        "dev:standalone": "ts-node src/standalone.ts",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.0.0",
+        "ws": "^8.16.0",
+        "express": "^4.18.0",
+        "zod": "^3.22.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.0",
+        "ts-node": "^10.9.0",
+        "@types/ws": "^8.5.0",
+        "@types/express": "^4.17.0",
+        "@types/node": "^20.0.0"
+    }
+}

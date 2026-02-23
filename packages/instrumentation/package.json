@@ -1,0 +1,24 @@
+{
+  "name": "@rn-debug-mcp/instrumentation",
+  "version": "1.0.0",
+  "description": "React Native instrumentation for RN Debug MCP",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-native": ">=0.71.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.2.0",
+    "react-native": "^0.73.0"
+  }
+}
