@@ -19,6 +19,21 @@ export function explainScreenPerformance(
   report.findings.forEach((f, i) => {
     lines.push(`[${f.severity.toUpperCase()}] ${i + 1}. ${f.title}`);
     lines.push(` ${f.description}`);
+
+    if (f.data?.stack && typeof f.data.stack === 'string') {
+      const stackLines = f.data.stack.split('\n');
+      // Skip the first few lines of the stack trace (Error object and instrumentation)
+      const relevantLines = stackLines
+        .filter(l => !l.includes('NetworkMonitor') && !l.includes('EventBuffer') && !l.includes('transport'))
+        .slice(0, 3) // show top 3 relevant frames
+        .map(l => `    at ${l.trim().replace(/^at\s+/, '')}`);
+
+      if (relevantLines.length > 0) {
+        lines.push(' Source:');
+        lines.push(...relevantLines);
+      }
+    }
+
     lines.push(` Suggestion: ${f.suggestion}`);
     lines.push('');
   });

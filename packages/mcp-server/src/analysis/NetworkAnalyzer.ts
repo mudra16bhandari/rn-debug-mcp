@@ -5,7 +5,7 @@ const SLOW_REQUEST_THRESHOLD_MS = 1000;
 const DUPLICATE_WINDOW_MS = 2000;
 
 export class NetworkAnalyzer {
-  constructor(private buffer: EventBuffer) {}
+  constructor(private buffer: EventBuffer) { }
 
   detectDuplicates(): Finding[] {
     const events = this.buffer.getByType('network');
@@ -32,7 +32,12 @@ export class NetworkAnalyzer {
             description: `${key} was called ${calls.length} times, with calls ${gap}ms apart.`,
             suggestion:
               'Add request deduplication, caching, or check for duplicate useEffect dependencies.',
-            data: { url: sorted[0].url, callCount: calls.length, gapMs: gap },
+            data: {
+              url: sorted[0].url,
+              callCount: calls.length,
+              gapMs: gap,
+              stack: sorted[0].stack
+            },
           });
           break; // one finding per URL
         }
@@ -52,7 +57,7 @@ export class NetworkAnalyzer {
         description: `${e.method} ${e.url} took ${e.duration}ms.`,
         suggestion:
           'Consider adding a loading state, caching the result, or paginating the response.',
-        data: { url: e.url, duration: e.duration },
+        data: { url: e.url, duration: e.duration, stack: e.stack },
       }));
   }
 }
