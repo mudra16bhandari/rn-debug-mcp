@@ -19,6 +19,8 @@
         "prepublishOnly": "npm run build",
         "dev": "ts-node src/index.ts",
         "dev:standalone": "ts-node src/standalone.ts",
+        "dev:fresh": "npm run free-ports && npm run dev:standalone",
+        "free-ports": "lsof -ti :4567,4568 | xargs kill -9 2>/dev/null || true",
         "test": "jest"
     },
     "dependencies": {
