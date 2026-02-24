@@ -1,6 +1,8 @@
-export { configure } from './config';
+export { configure, setCurrentScreen, getCurrentScreen } from './config';
 export { useRenderTracker } from './hooks/useRenderTracker';
 export { useRenderCheck } from './hooks/useRenderCheck';
+export { useRenderTimeTracker } from './hooks/useRenderTimeTracker';
+export { useContextTracker, trackContextTrigger } from './hooks/useContextTracker';
 export {
   startJSThreadMonitor,
   stopJSThreadMonitor,
