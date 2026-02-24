@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { sendEvent } from '../transport/EventBuffer';
+import { getCurrentScreen } from '../config';
 
 function shallowDiff(
   prev: Record<string, unknown>,
@@ -13,7 +14,8 @@ function shallowDiff(
 
 export function useRenderCheck(
   componentName: string,
-  props: Record<string, unknown>
+  props: Record<string, unknown>,
+  screen?: string
 ): void {
   const prevProps = useRef<Record<string, unknown> | null>(null);
 
@@ -23,6 +25,7 @@ export function useRenderCheck(
       type: 'render_check',
       component: componentName,
       propsChanged: changed,
+      screen: screen || getCurrentScreen(),
     });
   }
 

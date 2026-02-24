@@ -25,6 +25,10 @@ import {
   detectDuplicateNetworkCallsSchema,
   detectDuplicateNetworkCalls,
 } from './tools/detectDuplicateNetworkCalls';
+import {
+  getHeatmapSchema,
+  getHeatmap,
+} from './tools/getHeatmap';
 
 export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
   const server = new Server(
@@ -65,6 +69,11 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
       name: 'detectDuplicateNetworkCalls',
       description: 'Detects duplicate network requests made within a short time window.',
       inputSchema: detectDuplicateNetworkCallsSchema.shape as any,
+    },
+    {
+      name: 'getHeatmap',
+      description: 'Generates a performance heatmap for a screen, ranking components by "Heat Score".',
+      inputSchema: getHeatmapSchema.shape as any,
     },
   ];
 
@@ -109,6 +118,13 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
       case 'detectDuplicateNetworkCalls': {
         const input = detectDuplicateNetworkCallsSchema.parse(args || {});
         const result = detectDuplicateNetworkCalls(engine, input);
+        return {
+          content: [{ type: 'text', text: result }],
+        };
+      }
+      case 'getHeatmap': {
+        const input = getHeatmapSchema.parse(args || {});
+        const result = getHeatmap(engine, input);
         return {
           content: [{ type: 'text', text: result }],
         };

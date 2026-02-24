@@ -23,6 +23,7 @@ export class EventCollector {
             'js_block',
             'network',
             'navigation',
+            'context_update',
         ];
 
         if (!validTypes.includes(event.type as string)) {

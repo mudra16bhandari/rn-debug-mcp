@@ -27,7 +27,8 @@ class EventTransport {
         this.retryDelay = Math.min(this.retryDelay * 2, 30000);
       };
       this.ws.onerror = (e: any) => {
-        console.warn('[RN Debug MCP] WebSocket Error:', e.message);
+        const message = e.message || 'Connection failed (is the server running?)';
+        console.warn(`[RN Debug MCP] WebSocket Error: ${message}`, { url: cfg.wsUrl });
       };
 
     } catch {

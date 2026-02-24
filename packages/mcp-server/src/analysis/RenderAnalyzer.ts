@@ -71,4 +71,23 @@ export class RenderAnalyzer {
 
     return findings;
   }
+
+  getUnnecessaryRatios(componentNames: string[]): Map<string, number> {
+    const checks = this.buffer.getByType('render_check');
+    const ratios = new Map<string, number>();
+
+    componentNames.forEach((component) => {
+      const compChecks = checks.filter((e) => e.component === component);
+      if (compChecks.length === 0) {
+        ratios.set(component, 0);
+        return;
+      }
+      const total = compChecks.length;
+      const changed = compChecks.filter((e) => e.propsChanged).length;
+      const unnecessaryCount = total - changed;
+      ratios.set(component, unnecessaryCount / total);
+    });
+
+    return ratios;
+  }
 }

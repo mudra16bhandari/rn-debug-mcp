@@ -12,10 +12,20 @@ let config: DebugConfig = {
   logToConsole: false,
 };
 
+let currentScreenName = 'unknown';
+
 export function configure(overrides: Partial<DebugConfig>): void {
   config = { ...config, ...overrides };
 }
 
 export function getConfig(): DebugConfig {
   return config;
+}
+
+export function setCurrentScreen(name: string): void {
+  currentScreenName = name;
+}
+
+export function getCurrentScreen(): string {
+  return currentScreenName;
 }
