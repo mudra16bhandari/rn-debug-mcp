@@ -15,7 +15,8 @@ function shallowDiff(
 export function useRenderCheck(
   componentName: string,
   props: Record<string, unknown>,
-  screen?: string
+  screen?: string,
+  isMemo?: boolean
 ): void {
   const prevProps = useRef<Record<string, unknown> | null>(null);
 
@@ -25,6 +26,7 @@ export function useRenderCheck(
       type: 'render_check',
       component: componentName,
       propsChanged: changed,
+      isMemo,
       screen: screen || getCurrentScreen(),
     });
   }

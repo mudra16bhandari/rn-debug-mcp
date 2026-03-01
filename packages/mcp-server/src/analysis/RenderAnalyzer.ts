@@ -10,7 +10,7 @@ export class RenderAnalyzer {
 
   analyzeFrequency(screen?: string): Finding[] {
     const renders = this.buffer.getByType('render');
-    const filtered = (screen && screen !== 'unknown')
+    const filtered = (screen && screen !== 'unknown' && screen !== 'all')
       ? renders.filter((e) => e.screen === screen)
       : renders;
 
@@ -53,18 +53,29 @@ export class RenderAnalyzer {
 
     components.forEach((component) => {
       const compChecks = filtered.filter((e) => e.component === component);
+      const isMemo = compChecks.some(e => e.isMemo);
+
       const total = compChecks.length;
       const changed = compChecks.filter((e) => e.propsChanged).length;
       const ratio = total > 0 ? changed / total : 1;
 
       if (total >= 10 && ratio < UNNECESSARY_RATIO_THRESHOLD) {
+        const unnecessaryPct = Math.round((1 - ratio) * 100);
+        let title = `${component} has unnecessary renders`;
+        let suggestion = `Wrap ${component} with React.memo() to prevent renders when props are unchanged.`;
+
+        if (isMemo) {
+          title = `[MEMO] ${component} rendered unnecessarily`;
+          suggestion = `This component is ALREADY memoized but still rendering unnecessarily (${unnecessaryPct}%). Check for stable props!`;
+        }
+
         findings.push({
           severity: 'warning',
           component,
-          title: `${component} has unnecessary renders`,
-          description: `${component} rendered ${total} times but props changed only ${changed} times (${Math.round(ratio * 100)}%).`,
-          suggestion: `Wrap ${component} with React.memo() to prevent renders when props are unchanged.`,
-          data: { total, changed, unchangedRatio: 1 - ratio },
+          title,
+          description: `${component} rendered ${total} times but props changed only ${changed} times (${unnecessaryPct}%).`,
+          suggestion,
+          data: { total, changed, unnecessaryRatio: 1 - ratio, isMemo },
         });
       }
     });

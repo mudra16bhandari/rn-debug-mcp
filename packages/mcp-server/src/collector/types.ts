@@ -10,6 +10,7 @@ export type RenderCheckEvent = {
   type: 'render_check';
   component: string;
   propsChanged: boolean;
+  isMemo?: boolean;
   timestamp: number;
   screen?: string;
 };

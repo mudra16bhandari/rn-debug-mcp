@@ -9,7 +9,7 @@ export class ContextAnalyzer {
     analyzeTriggers(screen?: string): Finding[] {
         const contextUpdates = this.buffer.getByType('context_update');
         const renders = this.buffer.getByType('render');
-        const filteredRenders = screen
+        const filteredRenders = (screen && screen !== 'all')
             ? renders.filter((e) => e.screen === screen)
             : renders;
 

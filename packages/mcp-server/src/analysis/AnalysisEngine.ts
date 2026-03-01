@@ -30,6 +30,7 @@ export class AnalysisEngine {
   explainScreen(screen: string): ScreenReport {
     const findings: Finding[] = [
       ...this.render.analyzeFrequency(screen),
+      ...this.render.analyzeUnnecessaryRenders(),
       ...this.cascade.detectCascades(screen),
       ...this.context.analyzeTriggers(screen),
       ...this.network.detectDuplicates(),

@@ -1,12 +1,13 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useMemo, memo } from 'react';
 import { View, Text, Button, StyleSheet, ScrollView, Platform } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { initDebugMCP } from '@rn-debug-mcp/instrumentation';
 
 // 1. Initialize MCP in Dev mode
 if (__DEV__) {
-    // Android emulators use 10.0.2.2 for host localhost
-    const host = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
+    // For Android, run: adb reverse tcp:4567 tcp:4567
+    // This allows using 'localhost' on both platforms.
+    const host = 'localhost';
     initDebugMCP({
         wsUrl: `ws://${host}:4567`,
         enabled: true
@@ -20,13 +21,14 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [count, setCount] = useState(0);
 
     const increment = () => {
-        // Manually track the trigger for better analysis
-        // trackContextTrigger('HeavyContext', 'increment');
         setCount(c => c + 1);
     };
 
+    // Optimization: Memoize the context value to prevent unnecessary re-renders of all consumers
+    const value = useMemo(() => ({ count, increment }), [count]);
+
     return (
-        <HeavyContext.Provider value={{ count, increment }}>
+        <HeavyContext.Provider value={value}>
             {children}
         </HeavyContext.Provider>
     );
@@ -43,23 +45,46 @@ const CascadeTrigger = () => {
     );
 };
 
-const AffectedChild = ({ id }: { id: number }) => {
+// Optimization: Use memo to prevent re-renders when props/context haven't changed meaningfully
+const AffectedChild = memo(({ id }: { id: number }) => {
     const { count } = useContext(HeavyContext);
     return (
         <View style={styles.smallBox}>
             <Text style={styles.smallText}>Child {id}: {count}</Text>
         </View>
     );
-};
+});
 
 const SlowComponent = () => {
-    const start = Date.now();
-    // Simulate heavy JS work
-    while (Date.now() - start < 150) { }
+    // FIXED: Removed the blocking while(150ms) loop.
+    // Heavy work should usually be handled via useMemo or interaction manager.
 
     return (
         <View style={styles.box}>
-            <Text style={styles.text}>I am a slow component (150ms)</Text>
+            <Text style={styles.text}>I am now a fast component! (0ms delay)</Text>
+        </View>
+    );
+};
+
+const NativeLogTester = () => {
+    const logTrace = (level: 'log' | 'warn' | 'error') => {
+        const marker = `[MCP-TEST-${level.toUpperCase()}]`;
+        const message = `${marker} This is a test log at ${new Date().toISOString()}`;
+        console[level](message);
+    };
+
+    return (
+        <View style={styles.box}>
+            <Text style={styles.text}>Native Log Testing</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Button title="Log INFO" onPress={() => logTrace('log')} />
+                <Button title="Log WARN" color="orange" onPress={() => logTrace('warn')} />
+                <Button title="Log ERROR" color="red" onPress={() => logTrace('error')} />
+            </View>
+            <Text style={styles.smallTextAlt}>
+                Tapping these will output logs visible to `readNativeLogs`.
+                Use filter "MCP-TEST" to find them.
+            </Text>
         </View>
     );
 };
@@ -82,6 +107,8 @@ export default function App() {
                         </View>
 
                         <SlowComponent />
+
+                        <NativeLogTester />
                     </ScrollView>
                 </ContextProvider>
             </SafeAreaView>
@@ -97,5 +124,6 @@ const styles = StyleSheet.create({
     text: { fontSize: 18, marginBottom: 10 },
     smallBox: { padding: 15, backgroundColor: '#fff', margin: 5, borderRadius: 8, minWidth: 100, alignItems: 'center', borderWidth: 1, borderColor: '#ddd' },
     smallText: { fontSize: 14, fontWeight: '500' },
+    smallTextAlt: { fontSize: 12, color: '#666', marginTop: 10, fontStyle: 'italic' },
     row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20 }
 });

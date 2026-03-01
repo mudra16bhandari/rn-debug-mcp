@@ -85,7 +85,7 @@ module.exports = declare((api) => {
         const screenName = filename ? path.basename(filename, path.extname(filename)) : null;
         const propsParam = result.functionNode.params[0];
 
-        if (injectTracker(p.get('body'), name, propsParam, screenName, state)) {
+        if (injectTracker(p.get('body'), name, propsParam, screenName, state, result.isMemo)) {
           state.needsImport = true;
         }
       },
@@ -110,7 +110,7 @@ module.exports = declare((api) => {
           const screenName = filename ? path.basename(filename, path.extname(filename)) : null;
           const propsParam = result.functionNode.params[0];
 
-          if (injectTracker(targetBodyPath, name, propsParam, screenName, state)) {
+          if (injectTracker(targetBodyPath, name, propsParam, screenName, state, result.isMemo)) {
             state.needsImport = true;
           }
         }
@@ -119,7 +119,7 @@ module.exports = declare((api) => {
   };
 });
 
-function injectTracker(bodyPath, componentName, propsParam, screenName, state) {
+function injectTracker(bodyPath, componentName, propsParam, screenName, state, isMemo) {
   const first = bodyPath.node.body[0];
   if (
     first &&
@@ -145,8 +145,13 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state) {
   }
 
   // 1. Frequency tracker
+  const trackerArgs = [t.stringLiteral(componentName)];
+  if (screenName) {
+    trackerArgs.push(t.stringLiteral(screenName));
+  }
+
   const trackerCall = t.expressionStatement(
-    t.callExpression(t.identifier('useRenderTracker'), args)
+    t.callExpression(t.identifier('useRenderTracker'), trackerArgs)
   );
 
   // 2. Props check (for unnecessary renders)
@@ -163,6 +168,10 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state) {
     ];
     if (screenName) {
       checkArgs.push(t.stringLiteral(screenName));
+    }
+    if (isMemo) {
+      if (!screenName) checkArgs.push(t.identifier('undefined'));
+      checkArgs.push(t.booleanLiteral(true));
     }
 
     const checkCall = t.expressionStatement(

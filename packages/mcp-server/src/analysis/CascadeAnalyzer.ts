@@ -9,7 +9,7 @@ export class CascadeAnalyzer {
 
   detectCascades(screen?: string): Finding[] {
     const renders = this.buffer.getByType('render');
-    const filtered = screen
+    const filtered = (screen && screen !== 'all')
       ? renders.filter((e) => e.screen === screen)
       : renders;
 
@@ -59,7 +59,7 @@ export class CascadeAnalyzer {
 
   getInvolvedComponents(screen?: string): Map<string, number> {
     const renders = this.buffer.getByType('render');
-    const filtered = screen
+    const filtered = (screen && screen !== 'all')
       ? renders.filter((e) => e.screen === screen)
       : renders;
 
