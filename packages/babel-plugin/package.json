@@ -1,6 +1,6 @@
 {
   "name": "@rn-debug-mcp/babel-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Babel plugin for automatic React Native component instrumentation",
   "main": "src/index.js",
   "files": [
