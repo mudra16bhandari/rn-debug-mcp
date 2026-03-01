@@ -19,6 +19,6 @@ const collector = new EventCollector(buffer);
 createWebSocketServer(WS_PORT, collector);
 createHttpServer(HTTP_PORT, collector);
 
-console.log(`[RN Debug MCP] Standalone mode - Ready. WS:${WS_PORT} HTTP:${HTTP_PORT}`);
-console.log('[RN Debug MCP] Server is ready to receive events from React Native app');
-console.log('[RN Debug MCP] Press Ctrl+C to stop');
+console.error(`[RN Debug MCP] Standalone mode - Ready. WS:${WS_PORT} HTTP:${HTTP_PORT}`);
+console.error('[RN Debug MCP] Server is ready to receive events from React Native app');
+console.error('[RN Debug MCP] Press Ctrl+C to stop');

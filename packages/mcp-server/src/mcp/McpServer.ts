@@ -29,6 +29,10 @@ import {
   getHeatmapSchema,
   getHeatmap,
 } from './tools/getHeatmap';
+import {
+  readNativeLogsSchema,
+  readNativeLogs,
+} from './tools/readNativeLogs';
 
 export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
   const server = new Server(
@@ -48,32 +52,74 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
     {
       name: 'explainScreenPerformance',
       description: 'Explains why a React Native screen may be performing poorly.',
-      inputSchema: explainScreenPerformanceSchema.shape as any,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          screen: { type: 'string', description: 'The screen name to analyze (e.g. "ProductScreen")' },
+        },
+        required: ['screen'],
+      },
     },
     {
       name: 'detectUnnecessaryRenders',
       description: 'Detects components that re-render when props have not changed.',
-      inputSchema: detectUnnecessaryRendersSchema.shape as any,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          component: { type: 'string', description: 'Optional component name to filter by' },
+        },
+      },
     },
     {
       name: 'detectRenderCascade',
       description: 'Detects render cascades where multiple components render in quick succession.',
-      inputSchema: detectRenderCascadeSchema.shape as any,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          screen: { type: 'string', description: 'Optional screen name to filter by' },
+        },
+      },
     },
     {
       name: 'getSlowComponents',
       description: 'Identifies components with slow render times.',
-      inputSchema: getSlowComponentsSchema.shape as any,
+      inputSchema: {
+        type: 'object',
+        properties: {},
+      },
     },
     {
       name: 'detectDuplicateNetworkCalls',
       description: 'Detects duplicate network requests made within a short time window.',
-      inputSchema: detectDuplicateNetworkCallsSchema.shape as any,
+      inputSchema: {
+        type: 'object',
+        properties: {},
+      },
     },
     {
       name: 'getHeatmap',
       description: 'Generates a performance heatmap for a screen, ranking components by "Heat Score".',
-      inputSchema: getHeatmapSchema.shape as any,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          screen: { type: 'string', description: 'The screen name to analyze (e.g. "ProductScreen")' },
+        },
+        required: ['screen'],
+      },
+    },
+    {
+      name: 'readNativeLogs',
+      description: 'Reads native Android (logcat) or iOS (simctl) logs.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          platform: { type: 'string', enum: ['android', 'ios'], description: 'The platform to fetch logs from' },
+          limit: { type: 'number', description: 'Number of log lines to return', default: 100 },
+          deviceId: { type: 'string', description: 'Optional device ID or "booted" for iOS' },
+          filter: { type: 'string', description: 'Optional filter string (e.g., a tag for Android or predicate for iOS)' },
+        },
+        required: ['platform'],
+      },
     },
   ];
 
@@ -125,6 +171,13 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
       case 'getHeatmap': {
         const input = getHeatmapSchema.parse(args || {});
         const result = getHeatmap(engine, input);
+        return {
+          content: [{ type: 'text', text: result }],
+        };
+      }
+      case 'readNativeLogs': {
+        const input = readNativeLogsSchema.parse(args || {});
+        const result = await readNativeLogs(input);
         return {
           content: [{ type: 'text', text: result }],
         };
