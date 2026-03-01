@@ -43,4 +43,3 @@ function isComponent(node, name) {
 }
 
 module.exports = { isComponent };
-

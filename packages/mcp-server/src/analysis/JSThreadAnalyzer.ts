@@ -11,8 +11,7 @@ export class JSThreadAnalyzer {
     if (events.length === 0) return [];
 
     const maxDelay = Math.max(...events.map((e) => e.delay));
-    const avgDelay =
-      events.reduce((s, e) => s + e.delay, 0) / events.length;
+    const avgDelay = events.reduce((s, e) => s + e.delay, 0) / events.length;
 
     return [
       {

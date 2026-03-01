@@ -21,9 +21,12 @@ export function detectDuplicateNetworkCalls(
     if (f.data?.stack && typeof f.data.stack === 'string') {
       const stackLines = f.data.stack.split('\n');
       const relevantLines = stackLines
-        .filter(l => !l.includes('NetworkMonitor') && !l.includes('EventBuffer') && !l.includes('transport'))
+        .filter(
+          (l) =>
+            !l.includes('NetworkMonitor') && !l.includes('EventBuffer') && !l.includes('transport')
+        )
         .slice(0, 3)
-        .map(l => `    at ${l.trim().replace(/^at\s+/, '')}`);
+        .map((l) => `    at ${l.trim().replace(/^at\s+/, '')}`);
 
       if (relevantLines.length > 0) {
         lines.push(' Source:');

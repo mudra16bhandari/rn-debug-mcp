@@ -24,9 +24,12 @@ export function explainScreenPerformance(
       const stackLines = f.data.stack.split('\n');
       // Skip the first few lines of the stack trace (Error object and instrumentation)
       const relevantLines = stackLines
-        .filter(l => !l.includes('NetworkMonitor') && !l.includes('EventBuffer') && !l.includes('transport'))
+        .filter(
+          (l) =>
+            !l.includes('NetworkMonitor') && !l.includes('EventBuffer') && !l.includes('transport')
+        )
         .slice(0, 3) // show top 3 relevant frames
-        .map(l => `    at ${l.trim().replace(/^at\s+/, '')}`);
+        .map((l) => `    at ${l.trim().replace(/^at\s+/, '')}`);
 
       if (relevantLines.length > 0) {
         lines.push(' Source:');

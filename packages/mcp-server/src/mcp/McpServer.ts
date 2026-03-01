@@ -1,9 +1,6 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { AnalysisEngine } from '../analysis/AnalysisEngine';
 import {
   explainScreenPerformanceSchema,
@@ -13,26 +10,14 @@ import {
   detectUnnecessaryRendersSchema,
   detectUnnecessaryRenders,
 } from './tools/detectUnnecessaryRenders';
-import {
-  detectRenderCascadeSchema,
-  detectRenderCascade,
-} from './tools/detectRenderCascade';
-import {
-  getSlowComponentsSchema,
-  getSlowComponents,
-} from './tools/getSlowComponents';
+import { detectRenderCascadeSchema, detectRenderCascade } from './tools/detectRenderCascade';
+import { getSlowComponentsSchema, getSlowComponents } from './tools/getSlowComponents';
 import {
   detectDuplicateNetworkCallsSchema,
   detectDuplicateNetworkCalls,
 } from './tools/detectDuplicateNetworkCalls';
-import {
-  getHeatmapSchema,
-  getHeatmap,
-} from './tools/getHeatmap';
-import {
-  readNativeLogsSchema,
-  readNativeLogs,
-} from './tools/readNativeLogs';
+import { getHeatmapSchema, getHeatmap } from './tools/getHeatmap';
+import { readNativeLogsSchema, readNativeLogs } from './tools/readNativeLogs';
 
 export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
   const server = new Server(
@@ -55,7 +40,10 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
       inputSchema: {
         type: 'object',
         properties: {
-          screen: { type: 'string', description: 'The screen name to analyze (e.g. "ProductScreen")' },
+          screen: {
+            type: 'string',
+            description: 'The screen name to analyze (e.g. "ProductScreen")',
+          },
         },
         required: ['screen'],
       },
@@ -98,11 +86,15 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
     },
     {
       name: 'getHeatmap',
-      description: 'Generates a performance heatmap for a screen, ranking components by "Heat Score".',
+      description:
+        'Generates a performance heatmap for a screen, ranking components by "Heat Score".',
       inputSchema: {
         type: 'object',
         properties: {
-          screen: { type: 'string', description: 'The screen name to analyze (e.g. "ProductScreen")' },
+          screen: {
+            type: 'string',
+            description: 'The screen name to analyze (e.g. "ProductScreen")',
+          },
         },
         required: ['screen'],
       },
@@ -113,10 +105,17 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
       inputSchema: {
         type: 'object',
         properties: {
-          platform: { type: 'string', enum: ['android', 'ios'], description: 'The platform to fetch logs from' },
+          platform: {
+            type: 'string',
+            enum: ['android', 'ios'],
+            description: 'The platform to fetch logs from',
+          },
           limit: { type: 'number', description: 'Number of log lines to return', default: 100 },
           deviceId: { type: 'string', description: 'Optional device ID or "booted" for iOS' },
-          filter: { type: 'string', description: 'Optional filter string (e.g., a tag for Android or predicate for iOS)' },
+          filter: {
+            type: 'string',
+            description: 'Optional filter string (e.g., a tag for Android or predicate for iOS)',
+          },
         },
         required: ['platform'],
       },
@@ -192,4 +191,3 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
 
   console.error('[MCP] Server running on stdio');
 }
-

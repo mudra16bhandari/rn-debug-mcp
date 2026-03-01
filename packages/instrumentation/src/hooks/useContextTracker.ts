@@ -8,26 +8,30 @@ import { getCurrentScreen } from '../config';
  * to detect when the context value actually changes.
  */
 export function useContextTracker(providerName: string, value: any, screen?: string): void {
-    const prevValue = useRef(value);
+  const prevValue = useRef(value);
 
-    if (prevValue.current !== value) {
-        sendEvent({
-            type: 'context_update',
-            provider: providerName,
-            screen: screen || getCurrentScreen(),
-        });
-        prevValue.current = value;
-    }
+  if (prevValue.current !== value) {
+    sendEvent({
+      type: 'context_update',
+      provider: providerName,
+      screen: screen || getCurrentScreen(),
+    });
+    prevValue.current = value;
+  }
 }
 
 /**
  * Manually tracks a trigger that causes a context update (e.g. a dispatch call).
  */
-export function trackContextTrigger(providerName: string, triggerName: string = 'dispatch', screen?: string): void {
-    sendEvent({
-        type: 'context_update',
-        provider: providerName,
-        trigger: triggerName,
-        screen: screen || getCurrentScreen(),
-    });
+export function trackContextTrigger(
+  providerName: string,
+  triggerName: string = 'dispatch',
+  screen?: string
+): void {
+  sendEvent({
+    type: 'context_update',
+    provider: providerName,
+    trigger: triggerName,
+    screen: screen || getCurrentScreen(),
+  });
 }

@@ -30,7 +30,6 @@ class EventTransport {
         const message = e.message || 'Connection failed (is the server running?)';
         console.warn(`[RN Debug MCP] WebSocket Error: ${message}`, { url: cfg.wsUrl });
       };
-
     } catch {
       // WebSocket not available in this environment
     }

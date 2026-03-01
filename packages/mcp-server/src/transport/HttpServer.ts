@@ -1,10 +1,7 @@
 import express from 'express';
 import { EventCollector } from '../collector/EventCollector';
 
-export function createHttpServer(
-  port: number,
-  collector: EventCollector
-): express.Application {
+export function createHttpServer(port: number, collector: EventCollector): express.Application {
   const app = express();
   app.use(express.json({ limit: '1mb' }));
 
@@ -26,10 +23,7 @@ export function createHttpServer(
     });
   });
 
-  app.listen(port, () =>
-    console.error(`[HTTP] Listening on http://localhost:${port}`)
-  );
-
+  app.listen(port, () => console.error(`[HTTP] Listening on http://localhost:${port}`));
 
   return app;
 }

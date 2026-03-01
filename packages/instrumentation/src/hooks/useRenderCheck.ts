@@ -2,10 +2,7 @@ import { useRef } from 'react';
 import { sendEvent } from '../transport/EventBuffer';
 import { getCurrentScreen } from '../config';
 
-function shallowDiff(
-  prev: Record<string, unknown>,
-  next: Record<string, unknown>
-): boolean {
+function shallowDiff(prev: Record<string, unknown>, next: Record<string, unknown>): boolean {
   const prevKeys = Object.keys(prev);
   const nextKeys = Object.keys(next);
   if (prevKeys.length !== nextKeys.length) return true;

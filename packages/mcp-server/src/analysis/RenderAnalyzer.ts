@@ -4,23 +4,19 @@ import { Finding } from '../collector/types';
 const HIGH_RENDER_THRESHOLD = 5; // renders in analysis window
 const UNNECESSARY_RATIO_THRESHOLD = 0.5; // <50% prop changes = suspicious
 
-
 export class RenderAnalyzer {
-  constructor(private buffer: EventBuffer) { }
+  constructor(private buffer: EventBuffer) {}
 
   analyzeFrequency(screen?: string): Finding[] {
     const renders = this.buffer.getByType('render');
-    const filtered = (screen && screen !== 'unknown' && screen !== 'all')
-      ? renders.filter((e) => e.screen === screen)
-      : renders;
-
+    const filtered =
+      screen && screen !== 'unknown' && screen !== 'all'
+        ? renders.filter((e) => e.screen === screen)
+        : renders;
 
     const countByComponent = new Map<string, number>();
     filtered.forEach((e) => {
-      countByComponent.set(
-        e.component,
-        (countByComponent.get(e.component) ?? 0) + 1
-      );
+      countByComponent.set(e.component, (countByComponent.get(e.component) ?? 0) + 1);
     });
 
     const findings: Finding[] = [];
@@ -32,8 +28,7 @@ export class RenderAnalyzer {
           screen,
           title: `${component} has high render frequency`,
           description: `${component} rendered ${count} times in the analysis window.`,
-          suggestion:
-            'Check for unnecessary context subscriptions or unstable prop references.',
+          suggestion: 'Check for unnecessary context subscriptions or unstable prop references.',
           data: { renderCount: count },
         });
       }
@@ -44,16 +39,14 @@ export class RenderAnalyzer {
 
   analyzeUnnecessaryRenders(componentName?: string): Finding[] {
     const checks = this.buffer.getByType('render_check');
-    const filtered = componentName
-      ? checks.filter((e) => e.component === componentName)
-      : checks;
+    const filtered = componentName ? checks.filter((e) => e.component === componentName) : checks;
 
     const findings: Finding[] = [];
     const components = [...new Set(filtered.map((e) => e.component))];
 
     components.forEach((component) => {
       const compChecks = filtered.filter((e) => e.component === component);
-      const isMemo = compChecks.some(e => e.isMemo);
+      const isMemo = compChecks.some((e) => e.isMemo);
 
       const total = compChecks.length;
       const changed = compChecks.filter((e) => e.propsChanged).length;

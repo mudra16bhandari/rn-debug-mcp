@@ -5,7 +5,7 @@ const SLOW_REQUEST_THRESHOLD_MS = 1000;
 const DUPLICATE_WINDOW_MS = 2000;
 
 export class NetworkAnalyzer {
-  constructor(private buffer: EventBuffer) { }
+  constructor(private buffer: EventBuffer) {}
 
   detectDuplicates(): Finding[] {
     const events = this.buffer.getByType('network');
@@ -36,7 +36,7 @@ export class NetworkAnalyzer {
               url: sorted[0].url,
               callCount: calls.length,
               gapMs: gap,
-              stack: sorted[0].stack
+              stack: sorted[0].stack,
             },
           });
           break; // one finding per URL

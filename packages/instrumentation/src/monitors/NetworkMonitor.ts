@@ -27,7 +27,7 @@ export function startNetworkMonitor(): void {
 
     const isInternalMCP = mcpHost && url.includes(mcpHost);
 
-    // We filter out internal MCP communication (debugger noise), 
+    // We filter out internal MCP communication (debugger noise),
     // but keep everything else (including background system calls like Google connectivity checks)
     // so the user can see what's happening and where it comes from.
     if (isInternalMCP) {

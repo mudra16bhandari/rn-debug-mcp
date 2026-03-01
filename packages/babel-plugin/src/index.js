@@ -14,7 +14,9 @@ module.exports = declare((api) => {
           state.needsImport = false;
           state.needsSetScreen = false;
           const filename = state.file.opts.filename;
-          state.skip = filename && (filename.includes('node_modules') || filename.includes('instrumentation/src'));
+          state.skip =
+            filename &&
+            (filename.includes('node_modules') || filename.includes('instrumentation/src'));
         },
         exit(programPath, state) {
           if (state.skip) return;
@@ -23,28 +25,55 @@ module.exports = declare((api) => {
 
             if (!hasBinding) {
               const imports = [
-                t.objectProperty(t.identifier('useRenderTracker'), t.identifier('useRenderTracker'), false, true),
-                t.objectProperty(t.identifier('useRenderCheck'), t.identifier('useRenderCheck'), false, true),
-                t.objectProperty(t.identifier('useRenderTimeTracker'), t.identifier('useRenderTimeTracker'), false, true),
-                t.objectProperty(t.identifier('useContextTracker'), t.identifier('useContextTracker'), false, true),
+                t.objectProperty(
+                  t.identifier('useRenderTracker'),
+                  t.identifier('useRenderTracker'),
+                  false,
+                  true
+                ),
+                t.objectProperty(
+                  t.identifier('useRenderCheck'),
+                  t.identifier('useRenderCheck'),
+                  false,
+                  true
+                ),
+                t.objectProperty(
+                  t.identifier('useRenderTimeTracker'),
+                  t.identifier('useRenderTimeTracker'),
+                  false,
+                  true
+                ),
+                t.objectProperty(
+                  t.identifier('useContextTracker'),
+                  t.identifier('useContextTracker'),
+                  false,
+                  true
+                ),
               ];
 
               if (state.needsSetScreen) {
-                imports.push(t.objectProperty(t.identifier('setCurrentScreen'), t.identifier('setCurrentScreen'), false, true));
+                imports.push(
+                  t.objectProperty(
+                    t.identifier('setCurrentScreen'),
+                    t.identifier('setCurrentScreen'),
+                    false,
+                    true
+                  )
+                );
               }
 
               const requireDecl = t.variableDeclaration('const', [
                 t.variableDeclarator(
                   t.objectPattern(imports),
                   t.callExpression(t.identifier('require'), [
-                    t.stringLiteral('@rn-debug-mcp/instrumentation')
+                    t.stringLiteral('@rn-debug-mcp/instrumentation'),
                   ])
-                )
+                ),
               ]);
               programPath.unshiftContainer('body', requireDecl);
             }
           }
-        }
+        },
       },
       JSXOpeningElement(p, state) {
         if (state.skip) return;
@@ -55,7 +84,9 @@ module.exports = declare((api) => {
           t.isJSXIdentifier(nodeName.property) &&
           nodeName.property.name === 'Provider'
         ) {
-          const contextName = t.isJSXIdentifier(nodeName.object) ? nodeName.object.name : 'UnknownContext';
+          const contextName = t.isJSXIdentifier(nodeName.object)
+            ? nodeName.object.name
+            : 'UnknownContext';
           const valueAttr = p.node.attributes.find(
             (attr) => t.isJSXAttribute(attr) && attr.name.name === 'value'
           );
@@ -126,7 +157,10 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
     t.isExpressionStatement(first) &&
     t.isCallExpression(first.expression) &&
     t.isIdentifier(first.expression.callee) &&
-    (first.expression.callee.name === 'useRenderTracker' || first.expression.callee.name === 'useRenderCheck' || first.expression.callee.name === 'setCurrentScreen' || first.expression.callee.name === 'useRenderTimeTracker')
+    (first.expression.callee.name === 'useRenderTracker' ||
+      first.expression.callee.name === 'useRenderCheck' ||
+      first.expression.callee.name === 'setCurrentScreen' ||
+      first.expression.callee.name === 'useRenderTimeTracker')
   )
     return false;
 
@@ -156,7 +190,11 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
 
   // 2. Props check (for unnecessary renders)
   const propsName = propsParam
-    ? (t.isIdentifier(propsParam) ? propsParam : (t.isObjectPattern(propsParam) ? t.identifier('arguments[0]') : null))
+    ? t.isIdentifier(propsParam)
+      ? propsParam
+      : t.isObjectPattern(propsParam)
+        ? t.identifier('arguments[0]')
+        : null
     : t.objectExpression([]);
 
   if (propsName) {
@@ -164,7 +202,7 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
       t.stringLiteral(componentName),
       t.isIdentifier(propsName) || t.isObjectExpression(propsName)
         ? propsName
-        : t.memberExpression(t.identifier('arguments'), t.numericLiteral(0), true)
+        : t.memberExpression(t.identifier('arguments'), t.numericLiteral(0), true),
     ];
     if (screenName) {
       checkArgs.push(t.stringLiteral(screenName));
@@ -203,10 +241,7 @@ function injectContextTracker(bodyPath, contextName, valueExpr, screenName) {
   )
     return false;
 
-  const args = [
-    t.stringLiteral(contextName),
-    valueExpr,
-  ];
+  const args = [t.stringLiteral(contextName), valueExpr];
   if (screenName) {
     args.push(t.stringLiteral(screenName));
   }
@@ -218,4 +253,3 @@ function injectContextTracker(bodyPath, contextName, valueExpr, screenName) {
   bodyPath.unshiftContainer('body', trackerCall);
   return true;
 }
-

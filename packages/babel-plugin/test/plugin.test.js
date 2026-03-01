@@ -47,7 +47,7 @@ describe('@rn-debug-mcp/babel-plugin', () => {
     const input = `function Component() { return null; }`;
     const output = babel.transform(input, {
       plugins: [plugin],
-      filename: 'node_modules/some-lib/index.js'
+      filename: 'node_modules/some-lib/index.js',
     }).code;
     expect(output).not.toContain('useRenderTracker');
   });

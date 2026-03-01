@@ -1,11 +1,5 @@
 import { EventBuffer } from '../collector/EventBuffer';
-import {
-  Finding,
-  HeatmapItem,
-  HeatmapReport,
-  ScreenReport,
-  Severity,
-} from '../collector/types';
+import { Finding, HeatmapItem, HeatmapReport, ScreenReport, Severity } from '../collector/types';
 import { RenderAnalyzer } from './RenderAnalyzer';
 import { CascadeAnalyzer } from './CascadeAnalyzer';
 import { ContextAnalyzer } from './ContextAnalyzer';
@@ -81,14 +75,16 @@ export class AnalysisEngine {
     }
 
     const maxRenders = Math.max(...Array.from(renderCounts.values()), 1);
-    const cascadeInvolvement = this.cascade.getInvolvedComponents(screen === 'all' ? undefined : screen);
+    const cascadeInvolvement = this.cascade.getInvolvedComponents(
+      screen === 'all' ? undefined : screen
+    );
     const unnecessaryRatios = this.render.getUnnecessaryRatios(components);
 
     // Get durations
     const durationEvents = this.buffer.getByType('render_time');
     const durations = new Map<string, number>();
     const durationCounts = new Map<string, number>();
-    durationEvents.forEach(e => {
+    durationEvents.forEach((e) => {
       durations.set(e.component, (durations.get(e.component) ?? 0) + e.duration);
       durationCounts.set(e.component, (durationCounts.get(e.component) ?? 0) + 1);
     });
@@ -156,8 +152,7 @@ export class AnalysisEngine {
     });
 
     return findings.sort(
-      (a, b) =>
-        ((b.data?.avgMs as number) ?? 0) - ((a.data?.avgMs as number) ?? 0)
+      (a, b) => ((b.data?.avgMs as number) ?? 0) - ((a.data?.avgMs as number) ?? 0)
     );
   }
 
