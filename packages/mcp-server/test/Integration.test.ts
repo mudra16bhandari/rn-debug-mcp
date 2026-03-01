@@ -54,6 +54,16 @@ describe('MCP System Integration', () => {
       });
     }
 
+    // Add some slow render durations for HeavyComponent
+    for (let i = 0; i < 5; i++) {
+      collector.receive({
+        type: 'render_time',
+        component: 'HeavyComponent',
+        duration: 100, // Very slow
+        timestamp: timestamp + 6000 + i,
+      });
+    }
+
     const heatmap = engine.getHeatmap('Home');
 
     // Verify results

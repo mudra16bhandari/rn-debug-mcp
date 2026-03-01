@@ -17,8 +17,8 @@ describe('@rn-debug-mcp/babel-plugin', () => {
       }
     `;
     const output = transform(input);
-    expect(output).toContain('useRenderTracker("MyComponent")');
-    expect(output).toContain('useRenderCheck("MyComponent", props)');
+    expect(output).toContain('useRenderTracker("MyComponent", "test")');
+    expect(output).toContain('useRenderCheck("MyComponent", props, "test")');
     expect(output).toContain('require("@rn-debug-mcp/instrumentation")');
   });
 
@@ -29,8 +29,8 @@ describe('@rn-debug-mcp/babel-plugin', () => {
       };
     `;
     const output = transform(input);
-    expect(output).toContain('useRenderTracker("MyComponent")');
-    expect(output).toContain('useRenderCheck("MyComponent", props)');
+    expect(output).toContain('useRenderTracker("MyComponent", "test")');
+    expect(output).toContain('useRenderCheck("MyComponent", props, "test")');
   });
 
   it('should instrument memoized components', () => {
@@ -40,7 +40,8 @@ describe('@rn-debug-mcp/babel-plugin', () => {
       });
     `;
     const output = transform(input);
-    expect(output).toContain('useRenderTracker("MyComponent")');
+    expect(output).toContain('useRenderTracker("MyComponent", "test")');
+    expect(output).toContain('useRenderCheck("MyComponent", props, "test", true)');
   });
 
   it('should skip node_modules', () => {
