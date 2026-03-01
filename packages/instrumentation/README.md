@@ -22,9 +22,9 @@ Initialize the instrumentation in your app entry point (e.g., `index.js` or `App
 import { initDebugMCP } from '@rn-debug-mcp/instrumentation';
 
 if (__DEV__) {
-  initDebugMCP({ 
+  initDebugMCP({
     wsUrl: 'ws://localhost:4567',
-    logToConsole: false 
+    logToConsole: false,
   });
 }
 ```
@@ -32,6 +32,7 @@ if (__DEV__) {
 ## Features
 
 - **Component Tracking**: Works with `@rn-debug-mcp/babel-plugin` to track component renders.
+- **Context Tracking**: Monitors React Context value changes to diagnose provider-driven re-renders.
 - **Network Monitoring**: Automatically intercepts and logs `fetch` calls.
 - **JS Thread Monitoring**: Detects long-running tasks that block the main thread.
 

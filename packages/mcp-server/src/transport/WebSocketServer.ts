@@ -1,10 +1,7 @@
 import { WebSocketServer as WSSServer, WebSocket } from 'ws';
 import { EventCollector } from '../collector/EventCollector';
 
-export function createWebSocketServer(
-  port: number,
-  collector: EventCollector
-): WSSServer {
+export function createWebSocketServer(port: number, collector: EventCollector): WSSServer {
   const wss = new WSSServer({ port });
 
   wss.on('connection', (ws: WebSocket) => {
@@ -29,7 +26,6 @@ export function createWebSocketServer(
             console.error('[WS] Rejected event:', result.error);
           }
         });
-
       } catch (err) {
         console.error('[WS] Failed to parse message:', err);
       }
@@ -41,4 +37,3 @@ export function createWebSocketServer(
   console.error(`[WS] Listening on ws://localhost:${port}`);
   return wss;
 }
-

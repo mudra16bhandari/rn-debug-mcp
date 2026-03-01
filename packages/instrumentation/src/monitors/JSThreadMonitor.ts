@@ -15,7 +15,10 @@ export function startJSThreadMonitor(): void {
   intervalId = setInterval(() => {
     const now = Date.now();
     const delay = now - last - INTERVAL_MS;
-    if (delay > BLOCK_THRESHOLD_MS) {
+
+    // Ignore small delays that might be telemetry overhead (e.g. < 5ms over threshold)
+    // and ensure we don't flag the initialization/first tick
+    if (delay > BLOCK_THRESHOLD_MS && last !== 0) {
       sendEvent({ type: 'js_block', delay });
     }
     last = now;

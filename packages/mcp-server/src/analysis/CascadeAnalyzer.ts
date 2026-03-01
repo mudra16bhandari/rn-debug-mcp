@@ -9,9 +9,8 @@ export class CascadeAnalyzer {
 
   detectCascades(screen?: string): Finding[] {
     const renders = this.buffer.getByType('render');
-    const filtered = screen
-      ? renders.filter((e) => e.screen === screen)
-      : renders;
+    const filtered =
+      screen && screen !== 'all' ? renders.filter((e) => e.screen === screen) : renders;
 
     if (filtered.length < CASCADE_MIN_COMPONENTS) return [];
 
@@ -24,10 +23,7 @@ export class CascadeAnalyzer {
       const start = sorted[i].timestamp;
       let j = i;
 
-      while (
-        j < sorted.length &&
-        sorted[j].timestamp - start <= CASCADE_WINDOW_MS
-      ) {
+      while (j < sorted.length && sorted[j].timestamp - start <= CASCADE_WINDOW_MS) {
         window.push(sorted[j]);
         j++;
       }
@@ -55,5 +51,39 @@ export class CascadeAnalyzer {
     }
 
     return findings;
+  }
+
+  getInvolvedComponents(screen?: string): Map<string, number> {
+    const renders = this.buffer.getByType('render');
+    const filtered =
+      screen && screen !== 'all' ? renders.filter((e) => e.screen === screen) : renders;
+
+    const involvement = new Map<string, number>();
+    if (filtered.length < CASCADE_MIN_COMPONENTS) return involvement;
+
+    const sorted = [...filtered].sort((a, b) => a.timestamp - b.timestamp);
+
+    let i = 0;
+    while (i < sorted.length) {
+      const window: typeof sorted = [];
+      const start = sorted[i].timestamp;
+      let j = i;
+
+      while (j < sorted.length && sorted[j].timestamp - start <= CASCADE_WINDOW_MS) {
+        window.push(sorted[j]);
+        j++;
+      }
+
+      const unique = new Set(window.map((e) => e.component));
+      if (unique.size >= CASCADE_MIN_COMPONENTS) {
+        unique.forEach((comp) => {
+          involvement.set(comp, (involvement.get(comp) ?? 0) + 1);
+        });
+        i = j;
+      } else {
+        i++;
+      }
+    }
+    return involvement;
   }
 }

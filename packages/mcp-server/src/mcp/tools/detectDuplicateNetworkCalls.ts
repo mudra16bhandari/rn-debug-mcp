@@ -17,6 +17,23 @@ export function detectDuplicateNetworkCalls(
   findings.forEach((f, i) => {
     lines.push(`[${f.severity.toUpperCase()}] ${i + 1}. ${f.title}`);
     lines.push(` ${f.description}`);
+
+    if (f.data?.stack && typeof f.data.stack === 'string') {
+      const stackLines = f.data.stack.split('\n');
+      const relevantLines = stackLines
+        .filter(
+          (l) =>
+            !l.includes('NetworkMonitor') && !l.includes('EventBuffer') && !l.includes('transport')
+        )
+        .slice(0, 3)
+        .map((l) => `    at ${l.trim().replace(/^at\s+/, '')}`);
+
+      if (relevantLines.length > 0) {
+        lines.push(' Source:');
+        lines.push(...relevantLines);
+      }
+    }
+
     lines.push(` Suggestion: ${f.suggestion}`);
     lines.push('');
   });

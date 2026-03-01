@@ -10,7 +10,9 @@ export type RenderCheckEvent = {
   type: 'render_check';
   component: string;
   propsChanged: boolean;
+  isMemo?: boolean;
   timestamp: number;
+  screen?: string;
 };
 
 export type RenderTimeEvent = {
@@ -33,6 +35,7 @@ export type NetworkEvent = {
   duration: number;
   status?: number;
   timestamp: number;
+  stack?: string;
 };
 
 export type NavigationEvent = {
@@ -42,13 +45,22 @@ export type NavigationEvent = {
   timestamp: number;
 };
 
+export type ContextUpdateEvent = {
+  type: 'context_update';
+  provider: string;
+  timestamp: number;
+  trigger?: string; // e.g. 'dispatch', 'setState'
+  screen?: string;
+};
+
 export type RuntimeEvent =
   | RenderEvent
   | RenderCheckEvent
   | RenderTimeEvent
   | JSBlockEvent
   | NetworkEvent
-  | NavigationEvent;
+  | NavigationEvent
+  | ContextUpdateEvent;
 
 // ── Analysis Result Types ──────────────────────────────────
 export type Severity = 'info' | 'warning' | 'critical';
@@ -67,5 +79,21 @@ export interface ScreenReport {
   screen: string;
   analysisWindowMs: number;
   findings: Finding[];
+  summary: string;
+}
+
+export interface HeatmapItem {
+  component: string;
+  score: number;
+  renderCount: number;
+  cascadeParticipation: number;
+  unnecessaryRatio: number;
+  avgDuration?: number;
+  severity: Severity;
+}
+
+export interface HeatmapReport {
+  screen: string;
+  items: HeatmapItem[];
   summary: string;
 }
