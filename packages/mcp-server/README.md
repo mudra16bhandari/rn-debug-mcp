@@ -29,11 +29,13 @@ This server is the "brain" that analyzes data from your app. To use it, you need
 ## Features
 
 Exposes several tools to your AI assistant:
+
 - `explainScreenPerformance`: Get a high-level overview of why a screen is slow.
 - `detectUnnecessaryRenders`: Find components re-rendering with identical props.
 - `getSlowComponents`: List components with the highest render times.
 - `detectRenderCascade`: Identify chains of expensive renders.
 - `detectDuplicateNetworkCalls`: Find duplicate network calls.
+- `readNativeLogs`: Fetch and filter native logs (Android logcat / iOS simctl).
 
 ## License
 

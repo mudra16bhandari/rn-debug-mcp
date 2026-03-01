@@ -59,6 +59,7 @@ Add the following to your Cursor MCP settings:
 - `detectRenderCascade`: Finds chains of renders triggered in quick succession.
 - `getSlowComponents`: Lists components with high average render times.
 - `detectDuplicateNetworkCalls`: Identifies redundant API requests.
+- `readNativeLogs`: Fetch and filter native logs (Android logcat / iOS simctl).
 
 ## License
 

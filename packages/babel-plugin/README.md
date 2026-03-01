@@ -21,19 +21,16 @@ Add the plugin to your `babel.config.js`:
 ```javascript
 module.exports = {
   presets: ['module:@react-native/babel-preset'],
-  plugins: [
-    ...(process.env.NODE_ENV !== 'production'
-      ? ['@rn-debug-mcp/babel-plugin']
-      : []),
-  ],
+  plugins: [...(process.env.NODE_ENV !== 'production' ? ['@rn-debug-mcp/babel-plugin'] : [])],
 };
 ```
 
-## How it works
+The plugin scans your source code for functional components and injects tracking hooks from `@rn-debug-mcp/instrumentation`:
 
-The plugin scans your source code for functional components and injects two hooks from `@rn-debug-mcp/instrumentation`:
 1. `useRenderTracker`: Counts render frequency.
 2. `useRenderCheck`: Compares props between renders to detect unnecessary updates.
+3. `useContextTracker`: Injected into `Context.Provider` to track value changes.
+4. `setCurrentScreen`: Automatically inferred from filenames to provide screen-aware debugging.
 
 ## License
 
