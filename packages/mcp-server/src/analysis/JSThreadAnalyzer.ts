@@ -4,10 +4,13 @@ import { Finding } from '../collector/types';
 const CRITICAL_BLOCK_MS = 200;
 
 export class JSThreadAnalyzer {
-  constructor(private buffer: EventBuffer) {}
+  constructor(
+    private buffer: EventBuffer,
+    private projectId?: string
+  ) { }
 
   analyze(): Finding[] {
-    const events = this.buffer.getByType('js_block');
+    const events = this.buffer.getByType('js_block', this.projectId);
     if (events.length === 0) return [];
 
     const maxDelay = Math.max(...events.map((e) => e.delay));

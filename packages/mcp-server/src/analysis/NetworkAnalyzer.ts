@@ -5,10 +5,13 @@ const SLOW_REQUEST_THRESHOLD_MS = 1000;
 const DUPLICATE_WINDOW_MS = 2000;
 
 export class NetworkAnalyzer {
-  constructor(private buffer: EventBuffer) {}
+  constructor(
+    private buffer: EventBuffer,
+    private projectId?: string
+  ) { }
 
   detectDuplicates(): Finding[] {
-    const events = this.buffer.getByType('network');
+    const events = this.buffer.getByType('network', this.projectId);
     const findings: Finding[] = [];
 
     // Group by URL + method
@@ -48,7 +51,7 @@ export class NetworkAnalyzer {
   }
 
   detectSlowRequests(): Finding[] {
-    const events = this.buffer.getByType('network');
+    const events = this.buffer.getByType('network', this.projectId);
     return events
       .filter((e) => e.duration > SLOW_REQUEST_THRESHOLD_MS)
       .map((e) => ({

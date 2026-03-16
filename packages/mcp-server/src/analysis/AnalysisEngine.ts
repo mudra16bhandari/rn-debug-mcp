@@ -13,12 +13,21 @@ export class AnalysisEngine {
   private network: NetworkAnalyzer;
   private jsThread: JSThreadAnalyzer;
 
-  constructor(private buffer: EventBuffer) {
-    this.render = new RenderAnalyzer(buffer);
-    this.cascade = new CascadeAnalyzer(buffer);
-    this.context = new ContextAnalyzer(buffer);
-    this.network = new NetworkAnalyzer(buffer);
-    this.jsThread = new JSThreadAnalyzer(buffer);
+  constructor(
+    private buffer: EventBuffer,
+    private projectId?: string
+  ) {
+    this.render = new RenderAnalyzer(buffer, projectId);
+    this.cascade = new CascadeAnalyzer(buffer, projectId);
+    this.context = new ContextAnalyzer(buffer, projectId);
+    this.network = new NetworkAnalyzer(buffer, projectId);
+    this.jsThread = new JSThreadAnalyzer(buffer, projectId);
+  }
+
+  async sync(): Promise<void> {
+    if ('sync' in this.buffer && typeof (this.buffer as any).sync === 'function') {
+      await (this.buffer as any).sync();
+    }
   }
 
   explainScreen(screen: string): ScreenReport {
@@ -54,7 +63,7 @@ export class AnalysisEngine {
   }
 
   getHeatmap(screen: string): HeatmapReport {
-    const renders = this.buffer.getByType('render');
+    const renders = this.buffer.getByType('render', this.projectId);
     const filteredRenders =
       screen && screen !== 'unknown' && screen !== 'all'
         ? renders.filter((e) => e.screen === screen)
@@ -81,7 +90,7 @@ export class AnalysisEngine {
     const unnecessaryRatios = this.render.getUnnecessaryRatios(components);
 
     // Get durations
-    const durationEvents = this.buffer.getByType('render_time');
+    const durationEvents = this.buffer.getByType('render_time', this.projectId);
     const durations = new Map<string, number>();
     const durationCounts = new Map<string, number>();
     durationEvents.forEach((e) => {
@@ -127,7 +136,7 @@ export class AnalysisEngine {
   }
 
   getSlowComponents(): Finding[] {
-    const times = this.buffer.getByType('render_time');
+    const times = this.buffer.getByType('render_time', this.projectId);
     const byComponent = new Map<string, number[]>();
 
     times.forEach((e) => {

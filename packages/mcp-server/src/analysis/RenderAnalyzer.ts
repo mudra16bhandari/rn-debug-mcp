@@ -5,10 +5,13 @@ const HIGH_RENDER_THRESHOLD = 5; // renders in analysis window
 const UNNECESSARY_RATIO_THRESHOLD = 0.5; // <50% prop changes = suspicious
 
 export class RenderAnalyzer {
-  constructor(private buffer: EventBuffer) {}
+  constructor(
+    private buffer: EventBuffer,
+    private projectId?: string
+  ) { }
 
   analyzeFrequency(screen?: string): Finding[] {
-    const renders = this.buffer.getByType('render');
+    const renders = this.buffer.getByType('render', this.projectId);
     const filtered =
       screen && screen !== 'unknown' && screen !== 'all'
         ? renders.filter((e) => e.screen === screen)
@@ -38,7 +41,7 @@ export class RenderAnalyzer {
   }
 
   analyzeUnnecessaryRenders(componentName?: string): Finding[] {
-    const checks = this.buffer.getByType('render_check');
+    const checks = this.buffer.getByType('render_check', this.projectId);
     const filtered = componentName ? checks.filter((e) => e.component === componentName) : checks;
 
     const findings: Finding[] = [];
@@ -77,7 +80,7 @@ export class RenderAnalyzer {
   }
 
   getUnnecessaryRatios(componentNames: string[]): Map<string, number> {
-    const checks = this.buffer.getByType('render_check');
+    const checks = this.buffer.getByType('render_check', this.projectId);
     const ratios = new Map<string, number>();
 
     componentNames.forEach((component) => {

@@ -23,6 +23,10 @@ export function createHttpServer(port: number, collector: EventCollector): expre
     });
   });
 
+  app.get('/events/export', (_req, res) => {
+    res.json(collector.getBuffer().getAll());
+  });
+
   app.listen(port, () => console.error(`[HTTP] Listening on http://localhost:${port}`));
 
   return app;

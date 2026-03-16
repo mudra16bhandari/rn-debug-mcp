@@ -131,6 +131,9 @@ export async function startMcpServer(engine: AnalysisEngine): Promise<void> {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
+    // Sync data if we are in secondary mode
+    await engine.sync();
+
     switch (name) {
       case 'explainScreenPerformance': {
         const input = explainScreenPerformanceSchema.parse(args);

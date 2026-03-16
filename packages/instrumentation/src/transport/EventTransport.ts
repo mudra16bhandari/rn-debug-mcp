@@ -36,11 +36,20 @@ class EventTransport {
   }
 
   send(event: AnyEvent): void {
-    if (!getConfig().enabled) return;
+    const cfg = getConfig();
+    if (!cfg.enabled) return;
+
+    // Enrich event with multitenant data
+    const enriched: AnyEvent = {
+      ...event,
+      projectId: cfg.projectId,
+      timestamp: event.timestamp || Date.now()
+    };
+
     if (this.connected && this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(event));
+      this.ws.send(JSON.stringify(enriched));
     } else {
-      this.queue.push(event);
+      this.queue.push(enriched);
       if (this.queue.length > 200) this.queue.shift(); // cap queue
     }
   }

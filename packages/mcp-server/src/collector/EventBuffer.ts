@@ -28,13 +28,27 @@ export class EventBuffer {
     }
   }
 
-  getAll(): RuntimeEvent[] {
+  getAll(projectId?: string): RuntimeEvent[] {
     this.evict();
-    return [...this.events];
+    const all = [...this.events];
+    if (projectId) {
+      return all.filter((e) => !e.projectId || e.projectId === projectId);
+    }
+    return all;
   }
 
-  getByType<T extends RuntimeEvent['type']>(type: T): Extract<RuntimeEvent, { type: T }>[] {
-    return this.getAll().filter((e): e is Extract<RuntimeEvent, { type: T }> => e.type === type);
+  getByType<T extends RuntimeEvent['type']>(
+    type: T,
+    projectId?: string
+  ): Extract<RuntimeEvent, { type: T }>[] {
+    return this.getAll(projectId).filter(
+      (e): e is Extract<RuntimeEvent, { type: T }> => e.type === type
+    );
+  }
+
+  setEvents(events: RuntimeEvent[]): void {
+    this.events = events;
+    this.evict(); // Ensure we still respect maxAge
   }
 
   clear(): void {

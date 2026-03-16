@@ -12,6 +12,7 @@ RN Debug MCP provides runtime debugging capabilities for React Native apps throu
 - **🔍 AI-Powered Insights**: Uses MCP tools to explain performance issues, detect render cascades, and identify slow components.
 - **🌐 Network Monitoring**: Intercepts fetch calls to detect duplicates and timing issues.
 - **🧵 Thread Tracking**: Monitors the JS thread for blocking operations (>16ms).
+- **🔄 Multi-Client Support**: Run multiple Cursor windows concurrently, automatically resolving port conflicts and isolating project data.
 - **🛡️ Production Safe**: All instrumentation is disabled or stripped in production builds.
 
 ## Documentation

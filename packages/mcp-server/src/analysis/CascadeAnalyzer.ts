@@ -5,10 +5,13 @@ const CASCADE_WINDOW_MS = 50;
 const CASCADE_MIN_COMPONENTS = 3;
 
 export class CascadeAnalyzer {
-  constructor(private buffer: EventBuffer) {}
+  constructor(
+    private buffer: EventBuffer,
+    private projectId?: string
+  ) { }
 
   detectCascades(screen?: string): Finding[] {
-    const renders = this.buffer.getByType('render');
+    const renders = this.buffer.getByType('render', this.projectId);
     const filtered =
       screen && screen !== 'all' ? renders.filter((e) => e.screen === screen) : renders;
 
@@ -54,7 +57,7 @@ export class CascadeAnalyzer {
   }
 
   getInvolvedComponents(screen?: string): Map<string, number> {
-    const renders = this.buffer.getByType('render');
+    const renders = this.buffer.getByType('render', this.projectId);
     const filtered =
       screen && screen !== 'all' ? renders.filter((e) => e.screen === screen) : renders;
 

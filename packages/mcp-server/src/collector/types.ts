@@ -53,14 +53,15 @@ export type ContextUpdateEvent = {
   screen?: string;
 };
 
-export type RuntimeEvent =
+export type RuntimeEvent = (
   | RenderEvent
   | RenderCheckEvent
   | RenderTimeEvent
   | JSBlockEvent
   | NetworkEvent
   | NavigationEvent
-  | ContextUpdateEvent;
+  | ContextUpdateEvent
+) & { projectId?: string };
 
 // ── Analysis Result Types ──────────────────────────────────
 export type Severity = 'info' | 'warning' | 'critical';

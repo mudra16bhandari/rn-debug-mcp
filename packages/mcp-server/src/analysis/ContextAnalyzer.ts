@@ -4,11 +4,14 @@ import { Finding } from '../collector/types';
 const TRIGGER_WINDOW_MS = 100;
 
 export class ContextAnalyzer {
-  constructor(private buffer: EventBuffer) {}
+  constructor(
+    private buffer: EventBuffer,
+    private projectId?: string
+  ) { }
 
   analyzeTriggers(screen?: string): Finding[] {
-    const contextUpdates = this.buffer.getByType('context_update');
-    const renders = this.buffer.getByType('render');
+    const contextUpdates = this.buffer.getByType('context_update', this.projectId);
+    const renders = this.buffer.getByType('render', this.projectId);
     const filteredRenders =
       screen && screen !== 'all' ? renders.filter((e) => e.screen === screen) : renders;
 

@@ -3,6 +3,7 @@ export interface DebugConfig {
   wsUrl: string;
   bufferSize: number;
   logToConsole: boolean;
+  projectId: string;
 }
 
 let config: DebugConfig = {
@@ -10,6 +11,7 @@ let config: DebugConfig = {
   wsUrl: 'ws://localhost:4567',
   bufferSize: 200,
   logToConsole: false,
+  projectId: 'default-project',
 };
 
 let currentScreenName = 'unknown';
