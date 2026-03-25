@@ -1,6 +1,6 @@
 {
   "name": "rn-debug-mcp-root",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React Native Runtime Debugging MCP Monorepo",
   "private": true,
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "@rn-debug-mcp/server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "MCP Server for React Native runtime debugging",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

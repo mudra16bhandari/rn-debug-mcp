@@ -52,4 +52,29 @@ describe('@rn-debug-mcp/babel-plugin', () => {
     }).code;
     expect(output).not.toContain('useRenderTracker');
   });
+
+  it('should skip functions that do not return JSX', () => {
+    const input = `
+      function NetworkService() {
+        return { fetch: () => {} };
+      }
+      class MyService {
+        constructor() {
+          this.data = true;
+        }
+      }
+    `;
+    const output = transform(input);
+    expect(output).not.toContain('useRenderTracker');
+  });
+
+  it('should handle anonymous components or default exports gracefully', () => {
+    const input = `
+      export default function(props) {
+        return <View><Text>Hello</Text></View>;
+      }
+    `;
+    const output = transform(input);
+    expect(output).toContain('useRenderTracker');
+  });
 });

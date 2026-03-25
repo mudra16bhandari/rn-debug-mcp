@@ -1,8 +1,23 @@
 const t = require('@babel/types');
 
+function hasJSX(node) {
+  if (!node || typeof node !== 'object') return false;
+  if (node.type === 'JSXElement' || node.type === 'JSXFragment') return true;
+  for (const key in node) {
+    if (key === 'loc' || key === 'comments' || key === 'leadingComments' || key === 'trailingComments' || key === 'tokens' || key === 'extra') continue;
+    const child = node[key];
+    if (Array.isArray(child)) {
+      for (const item of child) {
+        if (hasJSX(item)) return true;
+      }
+    } else if (child && typeof child === 'object') {
+      if (hasJSX(child)) return true;
+    }
+  }
+  return false;
+}
+
 function isComponent(node, name) {
-  // Must have a name starting with uppercase
-  if (!name || !/^[A-Z]/.test(name)) return false;
 
   let actualFunction = node;
   let isMemo = false;
@@ -39,7 +54,11 @@ function isComponent(node, name) {
   // Skip if it has no body (expression arrow with no JSX check possible)
   if (!actualFunction.body) return false;
 
+  // Must contain JSX
+  if (!hasJSX(actualFunction.body)) return false;
+
   return { isComponent: true, functionNode: actualFunction, isMemo };
 }
 
 module.exports = { isComponent };
+

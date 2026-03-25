@@ -151,6 +151,7 @@ module.exports = declare((api) => {
 });
 
 function injectTracker(bodyPath, componentName, propsParam, screenName, state, isMemo) {
+  const safeComponentName = componentName || 'AnonymousComponent';
   const first = bodyPath.node.body[0];
   if (
     first &&
@@ -165,7 +166,7 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
     return false;
 
   // Auto-set current screen if component name matches filename (case-insensitive)
-  if (screenName && componentName && componentName.toLowerCase() === screenName.toLowerCase()) {
+  if (screenName && safeComponentName && safeComponentName.toLowerCase() === screenName.toLowerCase()) {
     const setScreenCall = t.expressionStatement(
       t.callExpression(t.identifier('setCurrentScreen'), [t.stringLiteral(screenName)])
     );
@@ -173,13 +174,13 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
     state.needsSetScreen = true;
   }
 
-  const args = [t.stringLiteral(componentName)];
+  const args = [t.stringLiteral(safeComponentName)];
   if (screenName) {
     args.push(t.stringLiteral(screenName));
   }
 
   // 1. Frequency tracker
-  const trackerArgs = [t.stringLiteral(componentName)];
+  const trackerArgs = [t.stringLiteral(safeComponentName)];
   if (screenName) {
     trackerArgs.push(t.stringLiteral(screenName));
   }
@@ -199,7 +200,7 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
 
   if (propsName) {
     const checkArgs = [
-      t.stringLiteral(componentName),
+      t.stringLiteral(safeComponentName),
       t.isIdentifier(propsName) || t.isObjectExpression(propsName)
         ? propsName
         : t.memberExpression(t.identifier('arguments'), t.numericLiteral(0), true),
@@ -220,7 +221,7 @@ function injectTracker(bodyPath, componentName, propsParam, screenName, state, i
 
   // 3. Time tracker
   const timeCall = t.expressionStatement(
-    t.callExpression(t.identifier('useRenderTimeTracker'), [t.stringLiteral(componentName)])
+    t.callExpression(t.identifier('useRenderTimeTracker'), [t.stringLiteral(safeComponentName)])
   );
 
   bodyPath.unshiftContainer('body', timeCall);
